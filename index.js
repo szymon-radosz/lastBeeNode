@@ -6,6 +6,7 @@ const app = express();
 
 const fly4free = require("./scrapper/fly4freeUS");
 const travelPiratesUS = require("./scrapper/travelPiratesUS");
+const secretFlyingUS = require("./scrapper/secretFlyingUS");
 
 app.use(express.static("dist"));
 app.listen(8080, () => console.log("Listening on port 8080!"));
