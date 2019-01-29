@@ -51,7 +51,8 @@ requestPromise(url)
         brand: brand,
         type: "Flights",
         country: "USA",
-        status: status
+        status: status,
+        confirmed_brand: 1
       };
 
       flyResults.push(offertObject);
@@ -70,7 +71,8 @@ requestPromise(url)
           brand: singleFlyResult.brand,
           country: singleFlyResult.country,
           type: singleFlyResult.type,
-          status: singleFlyResult.status
+          status: singleFlyResult.status,
+          confirmed_brand: singleFlyResult.confirmed_brand
         },
         json: true
       };
