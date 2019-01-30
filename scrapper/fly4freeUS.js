@@ -50,7 +50,7 @@ requestPromise(url)
     flyResults.map(singleFlyResult => {
       const options = {
         method: "POST",
-        uri: "http://127.0.0.1:8080/api/storeOffer",
+        uri: "https://last-bee.com/api/storeOffer",
         body: {
           title: singleFlyResult.offertTitle,
           description: singleFlyResult.offertDescription,
