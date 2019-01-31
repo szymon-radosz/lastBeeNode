@@ -50,7 +50,7 @@ requestPromise(url)
         type: "Flights",
         country: "USA",
         status: status,
-        confirmed_brand: 0
+        confirmed_brand: 1
       };
 
       flyResults.push(offertObject);
