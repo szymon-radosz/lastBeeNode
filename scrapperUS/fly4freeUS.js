@@ -1,67 +1,60 @@
 const requestPromise = require("request-promise");
 const cheerio = require("cheerio");
-const url = "https://www.travelpirates.com/flights";
+const url = "https://www.fly4free.com/flights/flight-deals/usa/";
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 requestPromise(url)
   .then(function(entireWebsiteHtml) {
-    const result = cheerio(".post-list > .post-preview", entireWebsiteHtml);
+    const result = cheerio(".entries-sub > .entry", entireWebsiteHtml);
 
     const flyResults = [];
 
     result.map(i => {
       let title = cheerio(
-        ".post-list > .post-preview > header > h2",
+        ".entries > .entry > .entry__title",
         entireWebsiteHtml
       )
         .eq(i)
-        .text()
-        .replace("Show deal:", "")
-        .replace("Expired:", "")
-        .replace(/[#_/']/g, "")
-        .trim();
+        .text();
       let description = cheerio(
-        ".post-list > .post-preview > p",
+        ".entries > .entry > .entry__content > p > strong",
         entireWebsiteHtml
       )
         .eq(i)
-        .text()
-        .replace(/[#_/']/g, "")
-        .trim();
+        .text();
       let articleUrl = cheerio(
-        ".post-list > .post-preview > footer > a",
+        ".entries > .entry > .media-photo > a",
         entireWebsiteHtml
-      )[i].attribs.href.trim();
+      )[i].attribs.href;
       let imageUrl = cheerio(
-        ".post-list > .post-preview > .post-preview__image > noscript",
+        ".entries > .entry > .media-photo > a > img",
         entireWebsiteHtml
-      )
-        .eq(i)
-        .text()
-        .trim();
-      let brand = "travelPiratesUS";
+      )[i].attribs.src;
+      let brand = "fly4freeUS";
       let status = 0;
 
       let offertObject = {
         offertTitle: title,
         offertDescription: description,
         offertUrl: articleUrl,
-        offertImageUrl: imageUrl,
+        offertImageUrl: `<img src="${imageUrl}" alt="fly4freeUS"/>`,
         brand: brand,
         type: "Flights",
         country: "USA",
         status: status,
+        price: 0,
+        currency: "USD",
         confirmed_brand: 1
       };
 
       flyResults.push(offertObject);
     });
 
-    //console.log(flyResults);
-
     flyResults.map(singleFlyResult => {
       const options = {
         method: "POST",
-        uri: "https://last-bee.com/api/storeOffer",
+        uri: `${process.env.API_URL}api/storeOffer`,
         body: {
           title: singleFlyResult.offertTitle,
           description: singleFlyResult.offertDescription,
@@ -72,6 +65,8 @@ requestPromise(url)
           country: singleFlyResult.country,
           type: singleFlyResult.type,
           status: singleFlyResult.status,
+          price: singleFlyResult.price,
+          currency: singleFlyResult.currency,
           confirmed_brand: singleFlyResult.confirmed_brand
         },
         json: true
